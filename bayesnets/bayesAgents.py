@@ -97,7 +97,29 @@ def constructBayesNet(gameState):
     variableDomainsDict = {}
 
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    # defining dictionary with the constants outlined above
+    variableDomainsDict[GHOST_HOUSE_VAR] = HOUSE_VALS
+    variableDomainsDict[FOOD_HOUSE_VAR] = HOUSE_VALS
+    variableDomainsDict[X_POS_VAR] = X_POS_VALS
+    variableDomainsDict[Y_POS_VAR] = Y_POS_VALS
+
+    # using method outlined above to get all observation variables and adding to list obsVars
+    for housePos in gameState.getPossibleHouses():
+        for obsPos in gameState.getHouseWalls(housePos):
+            obsVar = OBS_VAR_TEMPLATE % obsPos
+            variableDomainsDict[obsVar] = OBS_VALS
+            obsVars.append(obsVar)
+
+    # use tuples to connect nodes in bayes' net
+    # need to cast to tuple I think
+    for coord in [X_POS_VAR, Y_POS_VAR]:
+        for home in HOUSE_VARS:
+            tuple1 = (coord, home)
+            edges.append(tuple1)
+            for observation in obsVars:
+                tuple2 = (home, observation)
+                edges.append(tuple2)
+
     "*** END YOUR CODE HERE ***"
 
     variables = [X_POS_VAR, Y_POS_VAR] + HOUSE_VARS + obsVars
@@ -129,7 +151,11 @@ def fillYCPT(bayesNet, gameState):
 
     yFactor = bn.Factor([Y_POS_VAR], [], bayesNet.variableDomainsDict())
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    # copying above format and using the probabilities from layout.py
+    yFactor.setProbability({Y_POS_VAR: LEFT_BOTTOM_VAL}, PROB_ONLY_LEFT_BOTTOM)
+    yFactor.setProbability({Y_POS_VAR: LEFT_TOP_VAL}, PROB_ONLY_LEFT_TOP)
+    yFactor.setProbability({Y_POS_VAR: BOTH_BOTTOM_VAL}, PROB_BOTH_BOTTOM)
+    yFactor.setProbability({Y_POS_VAR: BOTH_TOP_VAL}, PROB_BOTH_TOP)
     "*** END YOUR CODE HERE ***"
     bayesNet.setCPT(Y_POS_VAR, yFactor)
 
