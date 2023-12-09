@@ -100,10 +100,51 @@ def joinFactors(factors):
                     "Input factors: \n" +
                     "\n".join(map(str, factors)))
 
-
+    # something with if you have P(x,y|z) * P(z) will become P(x,y,z)
+    # Need to do a check to see if given (z) = z in next probability
+    # get conditioned variables, get unconditioned variables
+    # cross-check to see if conditioned appears in conditioned (like above to get rid of it)
+    # make into a factor(inputUnconditionedVariables, inputConditionedVariables, inputVariableDomainsDict)
+    # set new factors probability
+    # return new factor
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    conditionedlst = []
+    unconditionedlst = []
+    # making sure factors is not empty
+    if len(factors) > 0:
+        isolatedFactor = list(factors)[0]
+        domainDict = isolatedFactor.variableDomainsDict()
+
+    # getting conditioned and unconditioned from list of factors
+    for factor in factors:
+        conditionals = factor.conditionedVariables()
+        unconditionals = factor.unconditionedVariables()
+        # adding conditionals to my conditioned set
+        for cond in conditionals:
+            if cond not in conditionedlst:
+                conditionedlst.append(cond)
+        # adding unconditonals to my unconditional set
+        for uncond in unconditionals:
+            if uncond not in unconditionedlst:
+                unconditionedlst.append(uncond)
+    # checking to see if you have a conditional related like P(x,y|z) * P(z) will become P(x,y,z)
+    for uncond in unconditionedlst:
+        if uncond in conditionedlst:
+            conditionedlst.remove(uncond)
+
+    # making my new factor with factor constructor
+    newFactor = Factor(unconditionedlst, conditionedlst, domainDict)
+
+    # getting pairs and then getting/setting probability
+    for pair in newFactor.getAllPossibleAssignmentDicts():
+        probability = 1
+        for item in factors:
+            probability = probability * item.getProbability(pair)
+        newFactor.setProbability(pair, probability)
+
+    return newFactor
     "*** END YOUR CODE HERE ***"
+
 
 
 def eliminateWithCallTracking(callTrackingList=None):
@@ -152,7 +193,18 @@ def eliminateWithCallTracking(callTrackingList=None):
                     "unconditionedVariables: " + str(factor.unconditionedVariables()))
 
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        unconditioned = factor.unconditionedVariables()
+        conditioned = factor.conditionedVariables()
+        domainDict = factor.variableDomainsDict()
+        # removing elim variable, only checking unconditioned since it cannot be in conditioned
+        if eliminationVariable in unconditioned:
+            unconditioned.remove(eliminationVariable)
+        newfactor = Factor(unconditioned, conditioned, domainDict)
+
+
+
+
+
         "*** END YOUR CODE HERE ***"
 
     return eliminate
