@@ -287,7 +287,8 @@ def getMostLikelyFoodHousePosition(evidence, bayesNet, eliminationOrder):
     (This should be a very short method.)
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    # inferenceByVariableElimination(bayesNet, queryVariables, evidenceDict, eliminationOrder):
+    possible_probabilities = inferenceByVariableElimination(bayesNet,  )
     "*** END YOUR CODE HERE ***"
 
 
