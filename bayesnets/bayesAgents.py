@@ -288,7 +288,19 @@ def getMostLikelyFoodHousePosition(evidence, bayesNet, eliminationOrder):
     """
     "*** YOUR CODE HERE ***"
     # inferenceByVariableElimination(bayesNet, queryVariables, evidenceDict, eliminationOrder):
-    possible_probabilities = inferenceByVariableElimination(bayesNet,  )
+    # probability cannot be less than 0
+    max_prob = -1
+    possible_probabilities = inference.inferenceByVariableElimination(bayesNet, ['foodHouse, ghostHouse'], evidence, eliminationOrder)
+    max_dict = {}
+    for dictionary in possible_probabilities.getAllPossibleAssignmentDicts():
+        current = possible_probabilities
+        current_prob = current.getProbability(dictionary)
+        # checking for highest possible
+        if current_prob > max_prob:
+            max_prob = current_prob
+            max_dict = dictionary
+    return max_dict
+
     "*** END YOUR CODE HERE ***"
 
 
